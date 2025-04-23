@@ -2,7 +2,7 @@
 
 Wrapper Node.js dengan dukungan TypeScript untuk API [5sim.net](https://5sim.net) - layanan verifikasi SMS.
 
-[![GitHub](https://img.shields.io/github/license/znmn/fivesim-api)](https://github.com/znmn/fivesim-api/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/github/license/znmn/fivesim-api?style=flat)](https://github.com/znmn/fivesim-api/blob/main/LICENSE)
 
 [🇬🇧 English](README.md)
 

@@ -2,7 +2,7 @@
 
 A strongly-typed Node.js wrapper for the [5sim.net](https://5sim.net) API - SMS verification service.
 
-[![GitHub](https://img.shields.io/github/license/znmn/fivesim-api)](https://github.com/znmn/fivesim-api/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/github/license/znmn/fivesim-api?style=flat)](https://github.com/znmn/fivesim-api/blob/main/LICENSE)
 
 [🇮🇩 Bahasa Indonesia](README-ID.md)
 
