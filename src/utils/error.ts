@@ -1,13 +1,13 @@
+import { APIErrorResponse } from "../interfaces/types";
+
 /**
  * Base class for all 5sim API errors
  */
 export class FiveSimError extends Error {
-	/** HTTP status code if applicable */
 	public status?: number;
-	/** Original error response */
-	public response?: any;
+	public response?: APIErrorResponse;
 
-	constructor(message: string, status?: number, response?: any) {
+	constructor(message: string, status?: number, response?: APIErrorResponse) {
 		super(message);
 		this.name = "FiveSimError";
 		this.status = status;
