@@ -27,6 +27,7 @@ export interface BuyNumberOptions {
 	voice?: "0" | "1"; // If '1', buy with the ability to receive a call from the robot
 	ref?: string; // Referral key
 	maxPrice?: number; // Maximum price limit (only works with operator='any')
+	wait?: boolean; // If true, wait until order status is RECEIVED
 }
 
 export interface SetPriceLimitParams {

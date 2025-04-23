@@ -36,6 +36,23 @@ export class UserService {
 	}
 
 	/**
+	 * Wait for order status to become RECEIVED
+	 * @private
+	 */
+	private async waitForOrderReceived(orderId: number): Promise<Order> {
+		while (true) {
+			const order = await this.checkOrder(orderId);
+			if (order.status === "RECEIVED") {
+				return order;
+			}
+			if (order.status !== "PENDING") {
+				throw new Error(`Order failed with status: ${order.status}`);
+			}
+			await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
+		}
+	}
+
+	/**
 	 * Find the best operator based on lowest cost and highest count
 	 * @private
 	 */
@@ -141,10 +158,17 @@ export class UserService {
 	 */
 	async buyActivationNumber(country: Country, operator: Operator, product: string, options: BuyNumberOptions = {}): Promise<Order> {
 		try {
+			const { wait = false, ...restOptions } = options;
 			const actualOperator = operator === "best" ? await this.findBestOperator(country, product) : operator;
 
-			const response = await this.client.get(`/user/buy/activation/${country}/${actualOperator}/${product}`, { params: options });
-			return response.data;
+			const response = await this.client.get(`/user/buy/activation/${country}/${actualOperator}/${product}`, { params: restOptions });
+			let order = response.data;
+
+			if (wait) {
+				order = await this.waitForOrderReceived(order.id);
+			}
+
+			return order;
 		} catch (error) {
 			throw createError(error);
 		}
@@ -153,12 +177,19 @@ export class UserService {
 	/**
 	 * Buy hosting number
 	 */
-	async buyHostingNumber(country: Country, operator: Operator, product: string): Promise<Order> {
+	async buyHostingNumber(country: Country, operator: Operator, product: string, options: BuyNumberOptions = {}): Promise<Order> {
 		try {
+			const { wait = false } = options;
 			const actualOperator = operator === "best" ? await this.findBestOperator(country, product) : operator;
 
 			const response = await this.client.get(`/user/buy/hosting/${country}/${actualOperator}/${product}`);
-			return response.data;
+			let order = response.data;
+
+			if (wait) {
+				order = await this.waitForOrderReceived(order.id);
+			}
+
+			return order;
 		} catch (error) {
 			throw createError(error);
 		}
