@@ -2,6 +2,10 @@
 
 A strongly-typed Node.js wrapper for the [5sim.net](https://5sim.net) API - SMS verification service.
 
+[![GitHub](https://img.shields.io/github/license/znmn/fivesim-api)](https://github.com/znmn/fivesim-api/blob/main/LICENSE)
+
+[🇮🇩 Bahasa Indonesia](README-ID.md)
+
 ## Installation
 
 With npm:
@@ -30,6 +34,10 @@ bun add fivesim-api
 - ⚡ Both authenticated and guest methods in a single class
 - 🔄 Promise-based async/await API
 - 📝 Detailed error messages for easier debugging
+
+- 🎯 Latest features:
+  - `best` operator option: Automatically selects operator with lowest cost and highest availability
+  - `wait` option: Waits until order status becomes "RECEIVED" (checks every 1 second)
 
 ## Usage
 
@@ -66,7 +74,11 @@ const buyNumber = async () => {
 			voice: "0",
 		};
 
-		const number: Order = await api.buyActivationNumber("russia", "any", "telegram", options);
+		// Use 'best' operator to get cheapest price with most availability
+		const number: Order = await api.buyActivationNumber("russia", "best", "telegram", {
+			...options,
+			wait: true, // Wait until number is ready
+		});
 
 		console.log(number);
 	} catch (error) {
@@ -244,4 +256,4 @@ import type {
 
 ## License
 
-MIT
+MIT © [Zainul Muhaimin](https://github.com/znmn)
