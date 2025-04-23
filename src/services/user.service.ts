@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { createError } from "../utils/error";
+import { GuestService } from "./guest.service";
 import {
 	UserProfile,
 	Order,
@@ -12,6 +13,7 @@ import {
 	VendorOrdersResponse,
 	VendorPaymentsResponse,
 	SuccessResponse,
+	OperatorPricing,
 } from "../interfaces/responses";
 import { OrderHistoryOptions, PaginationOptions, BuyNumberOptions, SetPriceLimitParams, DeletePriceLimitParams, PayoutMethod, FeeSystem, Country, Operator } from "../interfaces/types";
 
@@ -31,6 +33,33 @@ export class UserService {
 				Accept: "application/json",
 			},
 		});
+	}
+
+	/**
+	 * Find the best operator based on lowest cost and highest count
+	 * @private
+	 */
+	private async findBestOperator(country: Country, product: string): Promise<string> {
+		const prices = await GuestService.getPricesByCountryAndProduct(country, product);
+		const countryData = prices[country.toLowerCase()];
+		if (!countryData || !countryData[product]) {
+			throw new Error(`No pricing data found for ${country}/${product}`);
+		}
+
+		const operators = Object.entries<OperatorPricing>(countryData[product]);
+		if (operators.length === 0) {
+			throw new Error(`No operators available for ${country}/${product}`);
+		}
+
+		// Sort by cost (ascending) and then by count (descending)
+		operators.sort(([, a], [, b]) => {
+			if (a.cost === b.cost) {
+				return (b.count || 0) - (a.count || 0); // Higher count first, default to 0 if undefined
+			}
+			return (a.cost || 0) - (b.cost || 0); // Lower cost first, default to 0 if undefined
+		});
+
+		return operators[0][0]; // Return the operator name
 	}
 
 	/**
@@ -112,7 +141,9 @@ export class UserService {
 	 */
 	async buyActivationNumber(country: Country, operator: Operator, product: string, options: BuyNumberOptions = {}): Promise<Order> {
 		try {
-			const response = await this.client.get(`/user/buy/activation/${country}/${operator}/${product}`, { params: options });
+			const actualOperator = operator === "best" ? await this.findBestOperator(country, product) : operator;
+
+			const response = await this.client.get(`/user/buy/activation/${country}/${actualOperator}/${product}`, { params: options });
 			return response.data;
 		} catch (error) {
 			throw createError(error);
@@ -124,7 +155,9 @@ export class UserService {
 	 */
 	async buyHostingNumber(country: Country, operator: Operator, product: string): Promise<Order> {
 		try {
-			const response = await this.client.get(`/user/buy/hosting/${country}/${operator}/${product}`);
+			const actualOperator = operator === "best" ? await this.findBestOperator(country, product) : operator;
+
+			const response = await this.client.get(`/user/buy/hosting/${country}/${actualOperator}/${product}`);
 			return response.data;
 		} catch (error) {
 			throw createError(error);

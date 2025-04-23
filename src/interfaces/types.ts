@@ -45,7 +45,7 @@ export type FeeSystem = "fkwallet" | "payeer" | "unitpay";
 
 // Use 'any' for situations where a specific country or operator code is allowed
 export type Country = string | "any";
-export type Operator = string | "any";
+export type Operator = string | "any" | "best";
 
 // Webhook types (if supported by API)
 export interface WebhookEvent {
