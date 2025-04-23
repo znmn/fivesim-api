@@ -25,7 +25,7 @@
 		"wrapper",
 		"typescript"
 	],
-	"author": "",
+	"author": "Zainul Muhaimin",
 	"license": "MIT",
 	"dependencies": {
 		"axios": "^1.8.4"
@@ -44,10 +44,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/yourusername/fivesim-api"
+		"url": "https://github.com/znmn/fivesim-api"
 	},
 	"bugs": {
-		"url": "https://github.com/yourusername/fivesim-api/issues"
+		"url": "https://github.com/znmn/fivesim-api/issues"
 	},
 	"engines": {
 		"node": ">=14.0.0"
