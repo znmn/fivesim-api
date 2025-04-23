@@ -48,10 +48,15 @@ async function userExamples() {
 		const priceLimits = await api.getPriceLimits();
 		console.log("Price Limits:", priceLimits);
 
-		await api.setPriceLimit("telegram", 10);
+		await api.setPriceLimit({
+			product_name: "telegram",
+			price: 10,
+		});
 		console.log("Set price limit for telegram");
 
-		await api.deletePriceLimit("telegram");
+		await api.deletePriceLimit({
+			product_name: "telegram",
+		});
 		console.log("Deleted price limit for telegram");
 
 		// Buy hosting number
