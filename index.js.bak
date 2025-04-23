@@ -1,0 +1,7 @@
+const FiveSimAPI = require("./lib/FiveSimAPI");
+
+/**
+ * 5sim.net API Wrapper
+ * @module fivesim-api
+ */
+module.exports = FiveSimAPI;
